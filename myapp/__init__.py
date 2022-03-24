@@ -21,7 +21,8 @@ def create_app(test_config=None):
     # DATABASE is the path where the SQLite database file will be saved.
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'myapp.sqlite'),
+        # Database is out of scope for now
+        #DATABASE=os.path.join(app.instance_path, 'myapp.sqlite'),
     )
 
     #============================
@@ -42,6 +43,10 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    #==============================
+    # auth0 logic
+    #==============================
 
     # a simple page that says hello
     @app.route('/hello')
