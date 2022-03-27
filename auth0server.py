@@ -32,12 +32,14 @@ oauth.register(
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
 
+
 # /login route visitors will be redirected to Auth0 to begin authentication flow
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
+
 
 # After finishing the log-in with Auth0, the user will be returned to the application's /callback route
 # This route will also save the session for the user
@@ -46,6 +48,7 @@ def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
     return redirect("/")
+
 
 # /logout will clear user's session in the app and redirects to Auth0 logout endpoint before
 # the users are returned to home route
@@ -67,4 +70,8 @@ def logout():
 # home route
 @app.route("/")
 def home():
-    return render_template("home.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4))
+    return render_template(
+        "home.html", 
+        session=session.get('user'), 
+        pretty=json.dumps(session.get('user'), indent=4),
+        )

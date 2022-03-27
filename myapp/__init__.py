@@ -1,6 +1,15 @@
-import os
+import os, json
 
-from flask import Flask
+from flask import Flask, render_template, session
+
+# Lodaing an environment file is auth0 tutorials approach not flask tutorial's approach
+from dotenv import find_dotenv, load_dotenv
+from os import environ as env
+
+# Load the configurations from .env file
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
 
 def create_app(test_config=None):
     """Our application factory
@@ -20,7 +29,7 @@ def create_app(test_config=None):
     # SECRET_KEY is dev to enable convenient development but should be overridden when deploying
     # DATABASE is the path where the SQLite database file will be saved.
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY=env.get("APP_SECRET_KEY"),
         # Database is out of scope for now
         #DATABASE=os.path.join(app.instance_path, 'myapp.sqlite'),
     )
@@ -45,12 +54,19 @@ def create_app(test_config=None):
         pass
 
     #==============================
-    # auth0 logic
+    # Authentication
     #==============================
+    # Register authentication blueprint with the app
+    from . import auth
+    app.register_blueprint(auth.bp)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, world!'
+    # home route
+    @app.route("/")
+    def home():
+        return render_template(
+            "home.html", 
+            session=session.get('user'), 
+            pretty=json.dumps(session.get('user'), indent=4),
+            )
 
     return app
