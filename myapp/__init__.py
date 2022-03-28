@@ -2,7 +2,7 @@ import os, json
 
 from flask import Flask, render_template, session
 
-# Lodaing an environment file is auth0 tutorials approach not flask tutorial's approach
+# Loading an environment file is auth0 tutorials approach not flask tutorial's approach
 from dotenv import find_dotenv, load_dotenv
 from os import environ as env
 
@@ -12,7 +12,7 @@ if ENV_FILE:
     load_dotenv(ENV_FILE)
 
 def create_app(test_config=None):
-    """Our application factory
+    """The function that creates the application (an application factory).
     
     """
     #=============================
@@ -60,13 +60,11 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    # home route
-    @app.route("/")
-    def home():
-        return render_template(
-            "home.html", 
-            session=session.get('user'), 
-            pretty=json.dumps(session.get('user'), indent=4),
-            )
+    #=============================
+    # Content
+    #=============================
+    from . import content
+    app.register_blueprint(content.bp)
+    app.add_url_rule("/", endpoint='home') # home route is served in / page
 
     return app

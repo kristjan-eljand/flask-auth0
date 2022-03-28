@@ -66,23 +66,13 @@ def logout():
         )
     )
 
-# Registers a function that runs befor the view function no matter what URL is requested
-# it stores the user data in g.user, which lasts for the lenght of a single request
-# NB: i don't understand the need for this
-@bp.before_app_request
-def load_logged_in_user():
-    user = session.get('user')
-
-    if user is None:
-        g.user = None
-    else:
-        g.user = user
-
 # A decorator to require authentication
 def login_required(view):
+    """Opens a view for authenticated user and login page for anonymous user.
+    """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None:
+        if not session:
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
