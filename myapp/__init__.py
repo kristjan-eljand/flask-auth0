@@ -29,9 +29,7 @@ def create_app(test_config=None):
     # SECRET_KEY is dev to enable convenient development but should be overridden when deploying
     # DATABASE is the path where the SQLite database file will be saved.
     app.config.from_mapping(
-        SECRET_KEY=env.get("APP_SECRET_KEY"),
-        # Database is out of scope for now
-        #DATABASE=os.path.join(app.instance_path, 'myapp.sqlite'),
+        SECRET_KEY=env.get("APP_SECRET_KEY")
     )
 
     #============================
