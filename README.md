@@ -24,8 +24,8 @@ Check the python version again to see if the upgrade was successful
 * `sudo apt-get install virtualenv`
 
 **Clone the code repository and go to its main directory**
-* `git clone git@github.com:kristjan-eljand/full-flask-app.git`
-* `cd full-flask-app`
+* `git clone git@github.com:kristjan-eljand/flask-auth0.git`
+* `cd flask-auth0`
 
 **Create virtualenv named venv and activate it**
 * `virtualenv -p python3.9 venv`
