@@ -64,5 +64,5 @@ def create_app(test_config=None):
     from . import content
     app.register_blueprint(content.bp)
     app.add_url_rule("/", endpoint='home') # home route is served in / page
-
+   
     return app

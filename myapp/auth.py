@@ -18,15 +18,27 @@ from os import environ as env
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-# Configure Authlib to handle applications authentication with Auth0
+# Configure Authlib to handle authentication and authorization
 oauth = OAuth(current_app)
-
 oauth.register(
     "auth0",
     client_id=env.get("AUTH0_CLIENT_ID"),
     client_secret=env.get("AUTH0_CLIENT_SECRET"),
-    client_kwargs={
-        "scope": "openid profile email",
+    # Define the url for querying access token for our external api
+    # and indicate that we are using Authorization Code Flow
+    access_token_url=f"https://{env.get('AUTH0_DOMAIN')}/oauth/token",
+    access_token_params={
+        "grant_type":"authorization_code"
+    },
+    # Define the URL for auth0 authorization endpoint
+    # define all the scopes for which you want to get the access
+    # And indicate the the 'code' should be returned that could be
+    # exchanges for access token.
+    authorize_url=f"https://{env.get('AUTH0_DOMAIN')}/authorize",
+    authorize_params={
+        "scope": "openid email profile read:calculator",
+        "audience": "https://testapi/api",
+        "response_type": "code",
     },
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
@@ -72,7 +84,7 @@ def login_required(view):
     """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if not session:
+        if not session.get('user'):
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
